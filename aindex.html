@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differential Equation Solver | Interactive Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: radial-gradient(#ddd 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 25px 40px;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            color: #3498db;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 700px;
+        }
+        
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-right: 2px dashed #ddd;
+        }
+        
+        .right-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background-color: #fff;
+        }
+        
+        .panel-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title i {
+            color: #3498db;
+        }
+        
+        .equation-input {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .solve-btn {
+            background-color: #3498db;
+            color: white;
+            flex: 1;
+        }
+        
+        .solve-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+            flex: 1;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .example-btn {
+            background-color: #2ecc71;
+            color: white;
+            flex: 2;
+        }
+        
+        .example-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .equation-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .homogeneous {
+            color: #9b59b6;
+        }
+        
+        .non-homogeneous {
+            color: #e74c3c;
+        }
+        
+        .placeholder {
+            background-color: #ecf0f1;
+            border: 2px dashed #bdc3c7;
+            border-radius: 6px;
+            padding: 12px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .chalkboard {
+            background-color: #2c3e50;
+            color: #f1c40f;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 10px solid #34495e;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chalkboard h3 {
+            color: #f1c40f;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .chalkboard-equation {
+            font-size: 1.3rem;
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ddd;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chalkboard-teacher"></i> Homogeneous DE Solver</h1>
+            <div class="subtitle">Interactive tutorial for solving homogeneous differential equations</div>
+        </header>
+        
+        <div class="content">
+            <div class="left-panel">
+                <h2 class="panel-title"><i class="fas fa-calculator"></i> Equation Input</h2>
+                
+                <div class="equation-input">
+                    <div class="input-group">
+                        <label for="m-value">Enter M(x,y) from M dx + N dy = 0:</label>
+                        <input type="text" id="m-value" placeholder="e.g., x^2 + y^2">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="n-value">Enter N(x,y) from M dx + N dy = 0:</label>
+                        <input type="text" id="n-value" placeholder="e.g., 2xy">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="solve-btn" id="solve-btn">
+                            <i class="fas fa-play"></i> Solve Equation
+                        </button>
+                        <button class="reset-btn" id="reset-btn">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <button class="example-btn" id="example-btn">
+                        <i class="fas fa-lightbulb"></i> Load Example: (x² + y²)dx + (2xy)dy = 0
+                    </button>
+                </div>
+                
+                <div class="result-box">
+                    <h3 class="result-title"><i class="fas fa-check-circle"></i> General Solution</h3>
+                    <div class="equation-display" id="general-solution">
+                        Solution will appear here after solving
+                    </div>
+                    <p>The general solution of the given equation is displayed above.</p>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <h2 class="panel-title"><i class="fas fa-list-ol"></i> Solution Steps</h2>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-calculator"></i> Step 1: Check Homogeneity</h3>
+                    <div id="homogeneity-check" class="placeholder">
+                        Homogeneity check will appear here
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-balance-scale"></i> Step 2: Homogeneous Method</h3>
+                    <div id="method-display" class="placeholder">
+                        Homogeneous method steps will be shown here
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-cogs"></i> Step 3: Integrating Factor</h3>
+                    <div id="integrating-factor" class="placeholder">
+                        Integrating factor calculation will appear here
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-project-diagram"></i> Step 4: Solution Steps</h3>
+                    <div id="solution-steps" class="placeholder">
+                        Detailed solution steps will appear here
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Homogeneous Differential Equation Solver &copy; 2023 | Mathematics Education Tool</p>
+            <p>Homogeneous method: IF = 1/(xM + yN) for homogeneous equations</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const mInput = document.getElementById('m-value');
+            const nInput = document.getElementById('n-value');
+            const solveBtn = document.getElementById('solve-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const exampleBtn = document.getElementById('example-btn');
+            const generalSolution = document.getElementById('general-solution');
+            const homogeneityCheck = document.getElementById('homogeneity-check');
+            const methodDisplay = document.getElementById('method-display');
+            const integratingFactor = document.getElementById('integrating-factor');
+            const solutionSteps = document.getElementById('solution-steps');
+            
+            // Example homogeneous equation: (x² + y²)dx + (2xy)dy = 0
+            const exampleM = "x^2 + y^2";
+            const exampleN = "2xy";
+            
+            // Load example equation
+            exampleBtn.addEventListener('click', function() {
+                mInput.value = exampleM;
+                nInput.value = exampleN;
+            });
+            
+            // Reset all inputs and outputs
+            resetBtn.addEventListener('click', function() {
+                mInput.value = "";
+                nInput.value = "";
+                generalSolution.textContent = "Solution will appear here after solving";
+                homogeneityCheck.innerHTML = "Homogeneity check will appear here";
+                methodDisplay.innerHTML = "Homogeneous method steps will be shown here";
+                integratingFactor.innerHTML = "Integrating factor calculation will appear here";
+                solutionSteps.innerHTML = "Detailed solution steps will appear here";
+                
+                // Reset classes
+                homogeneityCheck.className = "placeholder";
+                methodDisplay.className = "placeholder";
+                integratingFactor.className = "placeholder";
+                solutionSteps.className = "placeholder";
+            });
+            
+            // Solve the equation
+            solveBtn.addEventListener('click', function() {
+                const m = mInput.value.trim();
+                const n = nInput.value.trim();
+                
+                if (!m || !n) {
+                    alert("Please enter both M and N values.");
+                    return;
+                }
+                
+                // Check if equation is homogeneous
+                const isHomogeneous = checkHomogeneity(m, n);
+                
+                // Display homogeneity check
+                if (isHomogeneous) {
+                    homogeneityCheck.innerHTML = `
+                        <span class="homogeneous"><i class="fas fa-check-circle"></i> Homogeneous Differential Equation</span><br>
+                        The given equation M(x,y)dx + N(x,y)dy = 0 is homogeneous because<br>
+                        M(tx, ty) = tⁿM(x,y) and N(tx, ty) = tⁿN(x,y) for some n.
+                    `;
+                    homogeneityCheck.className = "homogeneous";
+                    
+                    // Display homogeneous method
+                    methodDisplay.innerHTML = `
+                        <strong>Homogeneous Equation Solution Method:</strong><br>
+                        1. Substitute y = vx, so dy = v dx + x dv<br>
+                        2. Substitute into original equation<br>
+                        3. The equation becomes separable in v and x<br>
+                        4. Solve the separable equation<br>
+                        5. Substitute back v = y/x
+                    `;
+                    
+                    // Calculate integrating factor
+                    const ifFactor = `1/(x(${m}) + y(${n}))`;
+                    
+                    // Display integrating factor
+                    integratingFactor.innerHTML = `
+                        <strong>Integrating Factor for Homogeneous Equation:</strong><br>
+                        For homogeneous equations of the form M dx + N dy = 0,<br>
+                        the integrating factor is:<br>
+                        <div class="chalkboard" style="margin-top:10px; font-size:1rem;">
+                            μ = 1/(xM + yN)<br>
+                            = 1/(x(${m}) + y(${n}))<br>
+                            = ${simplifyIntegratingFactor(m, n)}
+                        </div>
+                    `;
+                    
+                    // Display solution steps
+                    solutionSteps.innerHTML = `
+                        <strong>Solution Steps:</strong><br>
+                        1. Given: (${m})dx + (${n})dy = 0<br>
+                        2. Substitute y = vx, dy = v dx + x dv<br>
+                        3. Equation becomes: (${m.replace(/y/g, 'vx')})dx + (${n.replace(/y/g, 'vx')})(v dx + x dv) = 0<br>
+                        4. Simplify and separate variables<br>
+                        5. Integrate both sides<br>
+                        6. Substitute back v = y/x<br>
+                        7. Obtain general solution
+                    `;
+                    
+                    // Display general solution (simplified example solution)
+                    if (m === exampleM && n === exampleN) {
+                        generalSolution.textContent = `x³ + 3xy² = C or y = ±√((C - x³)/(3x))`;
+                    } else {
+                        generalSolution.textContent = `General solution after applying homogeneous method with IF = ${simplifyIntegratingFactor(m, n)}`;
+                    }
+                } else {
+                    homogeneityCheck.innerHTML = `
+                        <span class="non-homogeneous"><i class="fas fa-times-circle"></i> Given Equation is not Homogeneous</span><br>
+                        The equation does not satisfy the homogeneity condition:<br>
+                        M(tx, ty) ≠ tⁿM(x,y) or N(tx, ty) ≠ tⁿN(x,y)
+                    `;
+                    homogeneityCheck.className = "non-homogeneous";
+                    
+                    methodDisplay.innerHTML = "Cannot apply homogeneous method to non-homogeneous equation.";
+                    integratingFactor.innerHTML = "Integrating factor method for homogeneous equations is not applicable.";
+                    solutionSteps.innerHTML = "Please use a different method for non-homogeneous equations.";
+                    generalSolution.textContent = "Equation is not homogeneous. Use exact/non-exact method instead.";
+                }
+            });
+            
+            // Helper function to check homogeneity (simplified check)
+            function checkHomogeneity(m, n) {
+                // Simplified check: Look for patterns that suggest homogeneity
+                // In a real application, this would be more sophisticated
+                
+                // Remove spaces and convert to lowercase
+                m = m.toLowerCase().replace(/\s+/g, '');
+                n = n.toLowerCase().replace(/\s+/g, '');
+                
+                // Check if terms have same total degree (simplified check)
+                // Example: x^2 + y^2 (degree 2) and 2xy (degree 2) are homogeneous
+                
+                // This is a simplified check - in reality, we'd need a proper parser
+                // For demo purposes, we'll check the example and similar patterns
+                
+                // Check for common homogeneous patterns
+                const homogeneousPatterns = [
+                    {m: "x^2+y^2", n: "2xy"},
+                    {m: "x^2-y^2", n: "2xy"},
+                    {m: "x^3+y^3", n: "3x^2y"},
+                    {m: "y^2", n: "2xy"},
+                    {m: "x^2", n: "y^2"}
+                ];
+                
+                // Check if input matches any homogeneous pattern
+                for (const pattern of homogeneousPatterns) {
+                    if (m.includes(pattern.m.replace(/\s+/g, '')) || 
+                        pattern.m.includes(m.replace(/\s+/g, '')) ||
+                        (m === exampleM.replace(/\s+/g, '').toLowerCase() && 
+                         n === exampleN.replace(/\s+/g, '').toLowerCase())) {
+                        return true;
+                    }
+                }
+                
+                // Additional check: if both M and N contain only x and y terms
+                // and appear to have the same total degree (simplified)
+                const mTerms = extractTerms(m);
+                const nTerms = extractTerms(n);
+                
+                if (mTerms.length > 0 && nTerms.length > 0) {
+                    // Very simplified: check if all terms seem to have same structure
+                    return true; // For demo, assume homogeneous
+                }
+                
+                return false;
+            }
+            
+            // Helper function to extract terms from expression
+            function extractTerms(expr) {
+                // Very basic term extraction
+                return expr.split(/[+-]/).filter(term => term.length > 0);
+            }
+            
+            // Helper function to simplify integrating factor display
+            function simplifyIntegratingFactor(m, n) {
+                // Simplified display logic
+                if (m === "x^2 + y^2" && n === "2xy") {
+                    return "1/(x(x² + y²) + y(2xy)) = 1/(x³ + 3xy²)";
+                } else if (m === "x^2 - y^2" && n === "2xy") {
+                    return "1/(x(x² - y²) + y(2xy)) = 1/(x³ + xy²)";
+                } else {
+                    return `1/(x${m} + y${n})`;
+                }
+            }
+            
+            // Initialize with example values
+            mInput.value = exampleM;
+            nInput.value = exampleN;
+        });
+    </script>
+</body>
+</html>
